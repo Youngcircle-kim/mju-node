@@ -1,3 +1,5 @@
+// 고급웹프로그래밍(6084) 과제 #1 김영환 60221304
+
 // article page 버튼 분류를 위한 let 변수
 let clickType;
 //search 버튼이 눌렸을 떄
@@ -65,7 +67,6 @@ async function getArticle(number) {
         console.log(number);
         const list = document.getElementById('list')
         list.innerText = '';
-
 
         // 원하는 기사 번호의 해당하는 기사 찾기
         const article = await axios.get('/article/'+ String(number));
@@ -152,6 +153,7 @@ else if(document.getElementById('add-article') && document.getElementById('optio
             return alert('기사 번호를 입력해주세요.')
         }
         try{
+            // 각각의 버튼을 눌렀을 때 마다 다른 기능을 하도록 조건문으로 걸러냄.
             if (clickType === "search"){
                 await getArticle(title_number);
             } else if (clickType === "edit"){
