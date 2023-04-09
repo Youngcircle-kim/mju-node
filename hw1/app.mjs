@@ -1,8 +1,5 @@
 import http from 'http';
 import fs from 'fs/promises'
-import url from 'url';
-import qs from'querystring';
-
 
 const users ={};
 let articles = {
@@ -25,46 +22,6 @@ http.createServer(async (req, res)=>{
     try{
         // 먼저 저장되어있는 쿠키가 있는지 없는지 검사
         const cookies = parseCookies(req.headers.cookie); // 변환 -> { mycookie: 'test' }
-
-        // 주소가 /으로 시작하는 경우
-        // login.html 의 login-form 에서 action 이 /article 으로, submit하면 발동
-        if (req.url.startsWith('/article')) {
-            const { query } = url.parse(req.url); // url을 객체로 만들어 query키만 빼옴
-            const { name } = qs.parse(query); // query키의 값인 문자열을 또 객체화해서 name키만 빼옴. 이 값은 쿠키에 저장될꺼임
-
-            // 쿠키 유효 시간을 현재시간 + 5분으로 설정
-            const expires = new Date();
-            expires.setMinutes(expires.getMinutes() + 5);
-
-            res.writeHead(302, {
-                Location: '/',
-                // HttpOnly는 자바스크립트로 쿠키에 접근할 수 없게 한다. 보안을 위해.
-                'Set-Cookie': `name=${encodeURIComponent(name)}; Expires=${expires.toGMTString()}; HttpOnly; Path=/`,
-            });
-            res.end();
-
-            // name이라는 쿠키가 있는 경우, 로그인 된 경우
-        } else if (cookies.name) {
-            try{
-                //article 페이지로 넘어감.
-                const data = await fs.readFile('./article.html');
-                res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end(data);
-
-            } catch (err) {
-                console.error(err);
-            }
-            // 쿠키가 비었을 경우, 로그인 페이지 html을 띄움
-        } else {
-            try{
-                // login 페이지로 넘어감
-                const data = await fs.readFile('./login.html');
-                res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-                return res.end(data);
-            } catch (err) {
-                console.error(err)
-            }
-        }
         if (req.method === 'GET'){
             console.log(`req.url : ${req.url}`)
             if (req.url === '/'){
@@ -73,10 +30,41 @@ http.createServer(async (req, res)=>{
                 return res.end(data);
             }
             else if(req.url === '/article'){
-                const data = await fs.readFile('./article.html');
-                res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end(data);
-            } else if(req.url ==='/users'){
+                //로그인이 된 경우
+                if (cookies.name) {
+                    try {
+                        const data = await fs.readFile('./article.html');
+                        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+                        res.end(data);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                //로그인이 안되어 있는 경우
+                } else {
+                    try{
+                        // login 페이지로 넘어감
+                        const data = await fs.readFile('./login.html');
+                        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+                        return res.end(data);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                }
+            } else if(req.url ==='/users'){// 주소가 /으로 시작하는 경우
+                // login이 되어 users 객체에 값이 저장된 경우 동작한다.
+                if (users.name){
+                    const name  = users.name;
+
+                    // 쿠키 유효 시간을 현재시간 + 5분으로 설정
+                    const expires = new Date();
+                    expires.setMinutes(expires.getMinutes() + 5);
+
+                    res.writeHead(302, {
+                        Location: '/article',
+                        // HttpOnly는 자바스크립트로 쿠키에 접근할 수 없게 한다. 보안을 위해.
+                        'Set-Cookie': `name=${encodeURIComponent(name)}; Expires=${expires.toGMTString()}; HttpOnly; Path=/article`,
+                    });
+                }
                 res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 return res.end(JSON.stringify(users));
             } else if(req.url ==='/articles'){
@@ -109,7 +97,7 @@ http.createServer(async (req, res)=>{
                 return req.on('end', () => {
                     console.log('POST 본문(Body):', body1);
                     const { name } = JSON.parse(body1); // { name } 형식으로 보냈으니 구조분해
-                    const id = Date.now();
+                    const id = "name";
                     users[id] = name;
                     console.log(users);
                     res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
