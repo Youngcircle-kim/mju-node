@@ -1,0 +1,19 @@
+#box-background{
+    justify-content: center;
+    place-items: center;
+    background-color: blanchedalmond;
+    font-family: sans-serif;
+    text-align: center;
+    width: 300px;
+    display: block;
+    margin: auto;
+    margin-top: 200px;
+    border: medium;
+}
+#box-header{
+    background-color: mediumseagreen;
+}
+#main-name{
+    display: flex;
+    justify-content: center;
+}

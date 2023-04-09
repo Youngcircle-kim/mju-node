@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Page</title>
+    <link rel="stylesheet" href="front.css">
+</head>
+<body>
+    <div id="box-background">
+      <div id="box-header">
+          <p> 김영환 60221304 과제#1</p>
+      </div>
+      <div id="box-main">
+          <div id = "main-name">
+              <p id='p-name' style='color: blue'></p><p style='color: blue'>님 환영합니다.</p>
+          </div>
+          <form id="add-article">
+              <p>새로운 기사를 입력하세요.</p>
+              <input type="text" id='title'/><button type="submit">등록</button>
+          </form>
+          <form id="option">
+              <p>검색/수정/삭제할 기사 번호를 입력하세요.</p>
+              <input type="text" id="title_number">
+              <button id="search" type="submit" onclick="searchBtn()">검색</button>
+              <button id="edit" type="submit" onclick="editBtn()">수정</button>
+              <button id="delete" type="submit" onclick="deleteBtn()">삭제</button>
+          </form>
+          <button id="show-all-article-button" onclick="getAllArticle()">전체 기사 보기</button>
+          <p id="list"></p>
+        </div>
+      </div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="front.mjs"></script>
+</html>
