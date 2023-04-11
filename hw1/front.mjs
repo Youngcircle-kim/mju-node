@@ -1,5 +1,7 @@
 // 고급웹프로그래밍(6084) 과제 #1 김영환 60221304
 
+// 떠 있는 li 번호 등록 용 변수 1: 1번 2: 2번 3: 3번 .... 0: 전체 기사 보기 -1: 없음
+let show = -1;
 // article page 버튼 분류를 위한 let 변수
 let clickType;
 //search 버튼이 눌렸을 떄
@@ -34,6 +36,8 @@ async function getUser() {
 async function getAllArticle(){
     // 전체 기사 보기 버튼 클릭 시 기사를 가져오는 함수
     try {
+        // 전체 기사가 떠있을거니 0 등록
+        show = 0;
         const articles  = await axios.get('/articles');
         const data = articles.data;
         console.log(articles.data);
@@ -64,8 +68,11 @@ async function getAllArticle(){
 async function getArticle(number) {
     // 검색 버튼을 누르면 해당 번호의 기사만 가져오는 함수
     try{
-        console.log(number);
-        const list = document.getElementById('list')
+        // 떠있는 기사 번호 등록
+        show = number;
+
+        //해당 기사 생성
+        const list = document.getElementById('list');
         list.innerText = '';
 
         // 원하는 기사 번호의 해당하는 기사 찾기
@@ -92,6 +99,34 @@ async function editArticle(number){
     try {
         // put 요청을 보냄
         await axios.put('/article/' + String(number), { title });
+
+        // 떠있는 기사랑 수정 기사랑 같을 경우 실시간 수정
+        if (show === number){
+            const article = await axios.get('/article/'+ String(number));
+
+            const list = document.getElementById('list');
+
+            list.removeChild(list.firstChild);
+
+            const li = document.createElement('li');
+
+            li.innerText = article.data;
+
+            list.appendChild(li);
+        }
+        // 전체 기사가 떠 있는 경우 수정 기사만 실시간 수정
+        else if(show === 0){
+            const article = await axios.get('/article/'+ String(number));
+
+            const list = document.getElementById('list');
+
+            // 전체 삭제
+            while(!list.firstChild){
+                list.removeChild(list.firstChild);
+            }
+            // 다시 생성
+            await getAllArticle()
+        }
     } catch (err) {
         console.error(err);
     }
@@ -100,6 +135,25 @@ async function deleteArticle(number){
     try {
         // delete 요청을 보냄
         await axios.delete('/user/' + String(number));
+        // 삭제 기사랑 나타내있는 기사랑 같을 경우 실시간 삭제
+        if (show === number){
+            const list = document.getElementById('list');
+
+            list.removeChild(list.firstChild);
+        }
+        // 전체 기사가 떠 있을 경우 실시간으로 삭제함
+        else if(show === 0){
+            const article = await axios.get('/article/'+ String(number));
+
+            const list = document.getElementById('list');
+
+            // 전체 삭제
+            while(!list.firstChild){
+                list.removeChild(list.firstChild);
+            }
+            // 다시 생성
+            await getAllArticle()
+        }
     } catch (err) {
         console.error(err);
     }
