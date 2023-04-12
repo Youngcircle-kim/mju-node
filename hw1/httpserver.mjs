@@ -3,6 +3,7 @@
 import http from 'http';
 import fs from 'fs/promises'
 
+// memory repository
 let users ={};
 let articles = {
     "1" : "OpenAI, GPT-4 출시",
@@ -10,6 +11,8 @@ let articles = {
     "3" : "ChatGPT 탑재 MS Office",
     "4" : "ChatGPT vs. Bard vs. Bing",
 };
+// 삽입 할 때, 인덱스 위해 더미 인덱스 4 지정
+let index = Object.keys(articles).length;
 // 쿠카 문자열을 자바스크립트 객체로 변환하는 함수
 const parseCookies = (cookie = '') =>
     cookie
@@ -142,8 +145,8 @@ http.createServer(async (req, res)=>{
                 return req.on('end', () => {
                     console.log('POST 본문(Body):', body2);
                     const { article } = JSON.parse(body2); // { name } 형식으로 보냈으니 구조분해
-                    const id = Object.keys(articles).length;
-                    articles[id+1] = article;
+                    index += 1; //추가니 index+1 값으로 객체 저장
+                    articles[index] = article;
                     console.log(articles);
                     res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
                     res.end('ok');
@@ -172,24 +175,6 @@ http.createServer(async (req, res)=>{
                 // 삭제를 원하는 값을 지운다.
                 delete articles[key];
 
-                // json 객체를 String으로 변환
-                let jsonString = JSON.stringify(articles);
-
-                // String을 다시 json 객체로 파싱
-                articles = JSON.parse(jsonString);
-
-                // 파싱된 객체를 재정렬
-                let sortedObj = {};
-                let i =1;
-                Object.keys(articles).sort().forEach(function(key) {
-                    sortedObj[i] = articles[key];
-                    i+=1;
-                });
-
-                //재정렬된 객체를 다시 articles로 불러옴.
-                articles = sortedObj;
-
-                console.log(articles);
                 res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
                 return res.end('ok');
             }

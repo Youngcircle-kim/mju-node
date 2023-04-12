@@ -80,8 +80,14 @@ async function getArticle(number) {
 
         // 기사 생성
         const li = document.createElement('li');
-        li.innerText = article.data;
 
+        console.log(article.data);
+        //삭제 됐으면, 존재하지 않는다고 알려주기
+        if (!article.data){
+            li.innerText = `${number}번 게시물이 존재하지 않습니다.`;
+        } else {
+            li.innerText = article.data;
+        }
         list.appendChild(li);
 
 
@@ -158,6 +164,7 @@ async function deleteArticle(number){
         console.error(err);
     }
 }
+
 window.onload = getUser();
 
 // 로그인 폼 제출(submit) 시 실행
