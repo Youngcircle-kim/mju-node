@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>60221304 김영환</title>
+    <link rel="stylesheet" href="./front.css">
+</head>
+<body>
+    <div id="main-box">
+        <header>
+            <!-- header 부분에 header.ejs include -->
+            <%- include('./layout/header'); %>
+        </header>
+        <div id="box-background">
+            <!-- nav 부분에 nav.ejs include -->
+            <%- include('./layout/nav'); %>
+            <!--로그인 성공하면 isNotLogin이 true가 되면서 환영합니다 출력-->
+            <%if(isLogin) {%>
+                <h3 style="color: #0064FF"><%=name %>님 환영합니다.</h3>
+            <%}%>
+            <div>
+                <form id="article" action='/article' method="post" >
+                    <a>새로운 기사를 입력하세요.</a>
+                    <br>
+                    <input id="title" type="text"><button type="submit">등록</button>
+                </form>
+                <form id="option">
+                    <br>
+                    <a>수정/삭제할 기사 번호를 입력하세요.</a>
+                    <br>
+                    <input id="title_number" type="text">
+                    <button id="update" type="submit" onclick="editBtn()">수정</button>
+                    <button id="delete" type="submit" onclick="deleteBtn()">삭제</button>
+                </form>
+            </div>
+            <br>
+            <!--기사 보이기 -->
+            <% for(let i = 0; i<data.length; i++){%>
+                <%if(data[i]?.index) {%>
+                    <li><%=data[i]?.index %>.<%=data[i]?.title%></li>
+                <%}%>
+            <%}%>
+        </div>
+        <footer>
+            <!-- footer 부분에 footer.ejs include -->
+            <%- include('./layout/footer');%>
+        </footer>
+    </div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/front.mjs"></script>
+</html>

@@ -1,0 +1,11 @@
+#main-box{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+header{
+    background: #0064FF;
+}
+#header-title{
+    color: white;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>60221304 김영환</title>
+    <link rel="stylesheet" href="./front.css">
+</head>
+<body>
+<div id="main-box">
+<!-- header 부분에 header.ejs include -->
+    <header>
+        <%- include('./layout/header'); %>
+    </header>
+    <div id="box-background">
+        <!-- nav 부분에 nav.ejs include -->
+        <%- include('./layout/nav'); %>
+        <!-- 로그인 성공하면 isNotLogin이 true가 되면서 환영합니다 출력-->
+        <%if(isLogin) {%>
+        <h3 style="color: #0064FF"><%=name %>님 환영합니다.</h3>
+        <%}%>
+        <form id="upload-file" action="/photo" method="post" enctype="multipart/form-data">
+            <label>최근 기사 사진을 올리세요.</label><br>
+            <input type="text" name="title"> <input id="file" type="file" name="manyImages" multiple/><br>
+            <button type="submit">업로드</button>
+        </form>
+    </div>
+    <!-- 업로드하면 업로드 되었다는 메시지 출력-->
+    <%if(isUploaded){%>
+        <%for(let i  =0; i < files.length; i++){%>
+            <a><%=files[i]?.originalname%></a>
+        <%}%>
+        <p>가 업로드되었습니다.</p>
+    <%}%>
+    <footer>
+        <!-- footer 부분에 footer.ejs include -->
+        <%- include('./layout/footer');%>
+    </footer>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/front.mjs"></script>
+</html>

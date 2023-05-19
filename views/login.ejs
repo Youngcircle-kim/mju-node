@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>60221304 김영환</title>
+    <link rel="stylesheet" href="./front.css">
+</head>
+<body>
+    <div id="main-box">
+        <header>
+            <!-- header 부분에 header.ejs include -->
+            <%- include('./layout/header'); %>
+        </header>
+        <div id="box-background">
+            <!-- nav 부분에 nav.ejs include -->
+            <%- include('./layout/nav'); %>
+<!--            로그인 성공하면 isNotLogin이 true가 되면서 환영합니다 출력-->
+            <% if(isNotLogin) {%>
+                <div id="main-name">
+                    <p>사용자 아이디를 입력하세요.</p>
+                    <form id="login-form" action='/login' method="post">
+                        <input type="text" name="name"> <button type="submit">로그인</button>
+                    </form>
+                </div>
+            <%} else {%>
+                  <h3 style="color: #0064FF"><%=name %>님 환영합니다.</h3>
+            <%}%>
+        </div>
+        <footer>
+            <%- include('./layout/footer');%>
+        </footer>
+    </div>
+</body>
+
+</html>
